@@ -9,6 +9,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|c:\\users\\merlo\\bureau\\b2_informatique\\c#\\tpcsharp2.0\\tpcsharp2.0\\class\\produit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|solutionrelative:tpcsharp2.0\\class\\produit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|c:\\users\\merlo\\bureau\\b2_informatique\\c#\\tpcsharp2.0\\tpcsharp2.0\\class\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|solutionrelative:tpcsharp2.0\\class\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|c:\\users\\merlo\\bureau\\b2_informatique\\c#\\tpcsharp2.0\\tpcsharp2.0\\class\\articlecustomers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC05EF0D-5CE2-453B-BFA0-68F492A4F78D}|TPcsharp2.0\\TPcsharp2.0.csproj|solutionrelative:tpcsharp2.0\\class\\articlecustomers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +26,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "articleCustomers.cs",
+              "DocumentMoniker": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Class\\articleCustomers.cs",
+              "RelativeDocumentMoniker": "TPcsharp2.0\\Class\\articleCustomers.cs",
+              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Class\\articleCustomers.cs",
+              "RelativeToolTip": "TPcsharp2.0\\Class\\articleCustomers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T12:10:50.832Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Class\\User.cs",
+              "RelativeDocumentMoniker": "TPcsharp2.0\\Class\\User.cs",
+              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Class\\User.cs",
+              "RelativeToolTip": "TPcsharp2.0\\Class\\User.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAqwBEAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T11:27:43.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs",
+              "RelativeDocumentMoniker": "TPcsharp2.0\\Program.cs",
+              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs",
+              "RelativeToolTip": "TPcsharp2.0\\Program.cs",
+              "ViewState": "AgIAAF4AAAAAAAAAAAAcwI0BAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T13:47:04.851Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -28,21 +75,9 @@
               "RelativeDocumentMoniker": "TPcsharp2.0\\Class\\Produit.cs",
               "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Class\\Produit.cs",
               "RelativeToolTip": "TPcsharp2.0\\Class\\Produit.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T15:25:11.75Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs",
-              "RelativeDocumentMoniker": "TPcsharp2.0\\Program.cs",
-              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs*",
-              "RelativeToolTip": "TPcsharp2.0\\Program.cs*",
-              "ViewState": "AgIAAMcAAAAAAAAAAADwv9sAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T13:47:04.851Z",
+              "WhenOpened": "2024-11-25T15:25:11.75Z",
               "EditorCaption": ""
             }
           ]

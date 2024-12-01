@@ -12,6 +12,7 @@ namespace TPcsharp2._0
         public string Nom { get; set; }
         public decimal Prix { get; set; } // Utiliser Decimal pour des valeurs monétaires
         public int QuantiteEnStock { get; set; }
+        public int maxQuantiteEnStock { get; set; }
         public int CodeProduit { get; set; }
     
 
@@ -21,6 +22,7 @@ namespace TPcsharp2._0
         {
             Nom = nom;
             Prix = prix;
+            maxQuantiteEnStock = qantiteEnStock;
             QuantiteEnStock = qantiteEnStock;
             CodeProduit = codeProduit;
         }
