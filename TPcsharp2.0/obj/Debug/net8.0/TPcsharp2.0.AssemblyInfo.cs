@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TPcsharp2.0")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bafb6bc802bacf175ddceaad6e5c8a439baf083c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+263e4efcfac54b504a4d6f837d24e30c4c20ec3d")]
 [assembly: System.Reflection.AssemblyProductAttribute("TPcsharp2.0")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TPcsharp2.0")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

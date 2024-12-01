@@ -19,105 +19,184 @@ namespace ConsoleAppTest
     {
         static void Main(string[] args)
         {
+            // Chaîne de connexion pour accéder à la base de données MySQL
             string connectionString = "Server=localhost;Database=tp_cs;Uid=root";
+
+            // Création d'une connexion MySQL avec fermeture automatique en fin de bloc
             using var connexion = new MySqlConnection(connectionString);
 
-            List<Produit> produits = new List<Produit>();
-            List<int> keyProduct = new List<int>();
-            List<User> users = new List<User>();
-            List<articleCustomers> articleCustomers = new List<articleCustomers>();
+            // Initialisation des listes pour stocker les données récupérées depuis la base
+            List<Produit> produits = new List<Produit>(); 
+            List<int> keyProduct = new List<int>();     
+            List<User> users = new List<User>();         
+            List<Panier> panier = new List<Panier>();   
+            List<articleCustomers> articleCustomers = new List<articleCustomers>(); 
 
+            // Ouverture de la connexion à la base de données
             connexion.Open();
+
+            // Chargement des utilisateurs existants depuis la base
             users = loadUser(connexion);
+
+            // Chargement des liens entre articles et clients depuis la base
             articleCustomers = loadArticleCustomers(connexion);
 
+            // Initialisation de la variable pour gérer l'ajout au panier
+            int addPanier = 0;
 
-
-            int ajoutPanier = 0;
-
-            Console.WriteLine("Bienvenue dans notre magasin en ligne ! Entrez votre nom (si admin rentrez le nom : admin) : ");
+            // Demande à l'utilisateur d'entrer son nom
+            Console.Write("Bienvenue dans notre magasin en ligne ! Entrez votre nom (si admin rentrez le nom : admin) : ");
             string nom = Console.ReadLine();
 
+            // Gestion des différentes pages selon le type d'utilisateur
             switch (nom)
             {
                 case "admin":
+                    // Si l'utilisateur entre "admin", accéder à la page admin
                     adminPage(connexion);
                     break;
+
                 default:
-                    addUser(connexion, nom,users);
-                    clientPage(connexion, produits, keyProduct, ajoutPanier,nom,users);
+                    // Pour un utilisateur classique, on vérifie/ajoute l'utilisateur dans la base
+                    addUser(connexion, nom, users);
+
+                    // Charger la page client avec les données nécessaires
+                    clientPage(connexion, produits, keyProduct, addPanier, nom, users, panier);
                     break;
             }
 
         }
 
-        static void clientPage(MySqlConnection connexion, List<Produit> produits, List<int> keyProduct, int ajoutPanier,string nom, List<User> users)
+       
+
+        static void clientPage(MySqlConnection connexion, List<Produit> produits, List<int> keyProduct, int addPanier,string nom, List<User> users, List<Panier> panier)
         {
+            // Début d'une boucle infinie pour maintenir l'application active
             while (true)
             {
+                // Chargement des produits depuis la base de données à chaque itération
                 produits = loadProduct(connexion);
-                keyProduct = produits.Select(p => p.CodeProduit).ToList();
-                string nomUser = afficheUser(connexion, users,nom);
 
-                
+                // Création d'une liste des codes de produits à partir des produits chargés
+                keyProduct = produits.Select(p => p.CodeProduit).ToList();
+
+                // Affichage du nom de l'utilisateur connecté
+                string nomUser = afficheUser(connexion, users, nom);
+
+                // Recherche de l'utilisateur actuel dans la liste des utilisateurs
+                var currentUser = users.FirstOrDefault(u => u.username == nom);
+
+                // Recherche du panier de l'utilisateur actuel
+                var currentPanier = panier.FirstOrDefault(p => p.customer_id == currentUser.customer_id);
+
+                // Efface l'écran pour afficher le menu principal
                 Console.Clear();
 
+                
                 Console.WriteLine("   #####    #####   ### ###   #####    ######           ######   #######  ### ###  #######  ##  ###   ######  #######\r\n  ### ###  ### ###  ### ###  ### ###   # ## #           ### ###  ### ###  ### ###  ### ###  ### ###   # ## #  ### ###\r\n  ### ###  ###      ### ###  ### ###     ##             ### ###  ###      ### ###  ###      #######     ##    ###\r\n  #######  ###      #######  #######     ##             ######   #####    ### ###  #####    #######     ##    #####\r\n  ### ###  ###      ### ###  ### ###     ##             ### ##   ###      ### ###  ###      ### ###     ##    ###\r\n  ### ###  ### ###  ### ###  ### ###     ##             ### ###  ### ###   #####   ### ###  ### ###     ##    ### ###\r\n  ### ###   #####   ### ###  ### ###     ##             ### ###  #######    ###    #######  ### ###     ##    #######\r\n\r\n");
+
+                
                 Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+
+               
                 Console.WriteLine("bonjour " + nomUser);
+
+                
                 Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
 
-
+                // Affichage des informations sur chaque produit
                 foreach (var produit in produits)
                 {
                     Console.WriteLine($"Nom: {produit.Nom}, Prix: {produit.Prix}, Quantité en stock: {produit.QuantiteEnStock}, Code produit: {produit.CodeProduit}");
-
                 }
 
-         
-
+                
                 Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
 
+                // Affichage du total du panier de l'utilisateur
+                sumPanier(connexion, currentUser.customer_id);
 
-                sumPanier(connexion);
-
+                
                 Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
 
-
+                
                 Console.Write("pour ajouter un article a votre panier rentré son code produit (pour le retirer du panier ajouter '-' devant le code produit) : ");
 
-                int.TryParse(Console.ReadLine(), out ajoutPanier);
+                // conversion de l'entrée utilisateur en entier
+                int.TryParse(Console.ReadLine(), out addPanier);
 
-                if (keyProduct.Contains(ajoutPanier))
+                // Vérification si le code produit entré existe dans la liste des produits
+                if (keyProduct.Contains(addPanier))
                 {
-                    var produitTrouve = produits.FirstOrDefault(p => p.CodeProduit == ajoutPanier);
-                    var currentUser = users.FirstOrDefault(u => u.username == nom);
+                    // Recherche du produit correspondant au code produit entré
+                    var foundProduct = produits.FirstOrDefault(p => p.CodeProduit == addPanier);
 
-                    if (produitTrouve != null)
+                    // Si le produit existe, on l'ajoute au panier de l'utilisateur
+                    if (foundProduct != null)
                     {
-                        addProduct(connexion, produitTrouve, ajoutPanier);
-                        if (ajoutPanier > 0)
+                        // Appel de la fonction pour ajouter le produit au panier
+                        addProduct(connexion, addPanier, foundProduct, currentUser);
+
+                        // Si l'ajout concerne un produit (code positif), on décrémente le stock
+                        if (addPanier > 0)
                         {
-                            decrementStock(connexion, ajoutPanier);
-                            linkArticleCustomers(connexion, ajoutPanier, currentUser.customer_id);
+                            decrementStock(connexion, addPanier);
                         }
                     }
-                }else if(keyProduct.Contains(-ajoutPanier))
+                }
+                // Vérification si l'utilisateur veut retirer un produit du panier (code négatif)
+                else if (keyProduct.Contains(-addPanier))
                 {
-                    var produitTrouve = produits.FirstOrDefault(p => p.CodeProduit == -ajoutPanier);
-                    var currentUser = users.FirstOrDefault(u => u.username == nom);
+                    // Recherche du produit correspondant au code produit retiré
+                    var foundProduct = produits.FirstOrDefault(p => p.CodeProduit == -addPanier);
 
-                    if (produitTrouve != null)
+                    // Si le produit existe, on le retire du panier
+                    if (foundProduct != null)
                     {
-                        removeProduct(connexion, produitTrouve,currentUser);
-                        incrementStock(connexion, -ajoutPanier, produitTrouve.maxQuantiteEnStock);
+                        // Appel de la fonction pour retirer le produit du panier
+                        removeProduct(connexion, foundProduct, addPanier, currentPanier, currentUser);
+
+                        // Incrémentation du stock du produit retiré
+                        incrementStock(connexion, -addPanier, foundProduct.maxQuantiteEnStock);
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Erreur : Le code produit {ajoutPanier} n'est pas valide.");
+                    
+                    Console.WriteLine($"Erreur : Le code produit {addPanier} n'est pas valide.");
                 }
             }
+        }
+
+        static  List<Panier> loadPanier(MySqlConnection connexion)
+        {
+            // Initialisation d'une liste pour stocker les paniers récupérés depuis la base de données
+            var paniers = new List<Panier>();
+
+            // Définition de la commande SQL pour sélectionner les colonnes nécessaires depuis la table `panier`
+            string command = "SELECT slot_id, article_id, price_item, customer_id FROM panier";
+
+            // Création d'une commande MySQL avec la requête et la connexion active
+            using var request = new MySqlCommand(command, connexion);
+
+            // Exécution de la commande et récupération des résultats sous forme de lecteur
+            using var reader = request.ExecuteReader();
+
+            // Parcours des lignes du résultat de la requête
+            while (reader.Read())
+            {
+                // Création d'un nouvel objet `Panier` à partir des colonnes de la ligne actuelle
+                var panier = new Panier
+                (
+                    reader.GetInt32("slot_id"),      // Lecture de la colonne `slot_id` comme entier
+                    reader.GetInt32("article_id"),  
+                    reader.GetInt32("price_item"),  
+                    reader.GetInt32("customer_id")  
+                );
+                // Ajout de l'objet `Panier` à la liste des paniers
+                paniers.Add(panier);
+            }
+            return paniers;
         }
 
         static List<Produit> loadProduct(MySqlConnection connexion)
@@ -125,8 +204,8 @@ namespace ConsoleAppTest
             var produits = new List<Produit>();
             string command = "SELECT name, price, numberOfArticle, article_id FROM article";
 
-            using var requette = new MySqlCommand(command, connexion);
-            using var reader = requette.ExecuteReader();
+            using var request = new MySqlCommand(command, connexion);
+            using var reader = request.ExecuteReader();
 
             while (reader.Read())
             {
@@ -148,8 +227,8 @@ namespace ConsoleAppTest
         {
             var users = new List<User>();
             string command = "SELECT username,customer_id FROM customers";
-            using var requette = new MySqlCommand(command, connexion);
-            using var reader = requette.ExecuteReader();
+            using var request = new MySqlCommand(command, connexion);
+            using var reader = request.ExecuteReader();
             while (reader.Read())
             {
                 var user = new User
@@ -162,17 +241,19 @@ namespace ConsoleAppTest
             return users;
         }
 
+     
+
         static List<articleCustomers> loadArticleCustomers(MySqlConnection connexion)
         {
             var articleCustomers = new List<articleCustomers>();
-            string command = "SELECT article_id,customer_id FROM article_customer";
-            using var requette = new MySqlCommand(command, connexion);
-            using var reader = requette.ExecuteReader();
+            string command = "SELECT slot_id,customer_id FROM article_customer";
+            using var request = new MySqlCommand(command, connexion);
+            using var reader = request.ExecuteReader();
             while (reader.Read())
             {
                 var articleCustomer = new articleCustomers
                 (
-                    reader.GetInt32("article_id"),
+                    reader.GetInt32("slot_id"),
                     reader.GetInt32("customer_id")
                 );
                 articleCustomers.Add(articleCustomer);
@@ -180,80 +261,57 @@ namespace ConsoleAppTest
             return articleCustomers;
         }
 
-        static void addProduct(MySqlConnection connexion, Produit produit,int customerId)
+        static void addProduct(MySqlConnection connexion, int addPanier, Produit produit, User currentUser)
         {
-            int articleId = produit.CodeProduit;
+            int produitId = produit.CodeProduit; 
             decimal price_item = produit.Prix;
+            var currentPanier = loadPanier(connexion).FirstOrDefault(p => p.customer_id == currentUser.customer_id);
 
             // Vérifier si l'article existe dans la base
             var requetteCheckArticle = "SELECT COUNT(*) FROM article WHERE article_id = @articleId";
             using (var checkCommand = new MySqlCommand(requetteCheckArticle, connexion))
             {
-                checkCommand.Parameters.AddWithValue("@articleId", articleId);
-                checkCommand.Parameters.AddWithValue("@price_item", price_item);
+                checkCommand.Parameters.AddWithValue("@articleId", produitId);
                 var count = Convert.ToInt32(checkCommand.ExecuteScalar());
 
                 if (count > 0) // L'article existe
                 {
-                    var requetteInsert = "INSERT INTO `panier` (`slot_id`, `article_id`, `price_item`) VALUES (NULL, @articleId, @price_item)";
+                    // Insérer le produit dans le panier (création d'un nouveau slot_id)
+                    var requetteInsert = "INSERT INTO `panier` (`slot_id`, `article_id`, `price_item`, `customer_id`) VALUES (NULL, @articleId, @price_item, @customerId)";
                     using (var insertCommand = new MySqlCommand(requetteInsert, connexion))
                     {
-                        insertCommand.Parameters.AddWithValue("@articleId", articleId);
+                        insertCommand.Parameters.AddWithValue("@articleId", produitId);
                         insertCommand.Parameters.AddWithValue("@price_item", price_item);
+                        insertCommand.Parameters.AddWithValue("@customerId", currentUser.customer_id);
                         insertCommand.ExecuteNonQuery();
-                        Console.WriteLine($"Produit {produit.Nom} ajouté au panier avec succès.");
                     }
+
+                    // Recharger le panier pour récupérer le dernier slot_id
+                    currentPanier = loadPanier(connexion).LastOrDefault(p => p.customer_id == currentUser.customer_id);
+
+                    // Insérer le lien dans la table article_customer avec le nouveau slot_id
+                    var insertLinkQuery = "INSERT INTO article_customer (slot_id, customer_id) VALUES (@slot_id, @customerId)";
+                    using (var insertLinkCommand = new MySqlCommand(insertLinkQuery, connexion))
+                    {
+                        insertLinkCommand.Parameters.AddWithValue("@slot_id", currentPanier.slot_id); // Utilisez le dernier slot_id récupéré
+                        insertLinkCommand.Parameters.AddWithValue("@customerId", currentUser.customer_id);
+                        insertLinkCommand.ExecuteNonQuery();
+                    }
+
+                    Console.WriteLine($"Produit {produit.Nom} ajouté au panier avec succès.");
                 }
                 else
                 {
-                    Console.WriteLine($"Erreur : L'article avec l'ID {articleId} n'existe pas dans la table 'article'.");
+                    Console.WriteLine($"Erreur : L'article avec l'ID {produitId} n'existe pas dans la table 'article'.");
                 }
             }
-
         }
-
-        static bool RecordExists(MySqlConnection connexion, string table, string column, int value)
-        {
-            var query = $"SELECT COUNT(*) FROM {table} WHERE {column} = @value";
-            using var command = new MySqlCommand(query, connexion);
-            command.Parameters.AddWithValue("@value", value);
-            return Convert.ToInt32(command.ExecuteScalar()) > 0;
-        }
-
-        static void linkArticleCustomers(MySqlConnection connexion, int articleId, int customerId)
-        {
-            // Vérifier l'existence de article_id
-            if (!RecordExists(connexion, "article", "article_id", articleId))
-            {
-                Console.WriteLine($"Erreur : L'article avec ID {articleId} n'existe pas.");
-                return;
-            }
-
-            // Vérifier l'existence de customer_id
-            if (!RecordExists(connexion, "customers", "customer_id", customerId))
-            {
-                Console.WriteLine($"Erreur : Le client avec ID {customerId} n'existe pas.");
-                return;
-            }
-
-            // Insérer le lien
-            var requetteInsertLien = "INSERT INTO `article_customer` (`article_id`, `customer_id`) VALUES (@articleId, @customerId)";
-            using (var linkCommand = new MySqlCommand(requetteInsertLien, connexion))
-            {
-                linkCommand.Parameters.AddWithValue("@articleId", articleId);
-                linkCommand.Parameters.AddWithValue("@customerId", customerId);
-                linkCommand.ExecuteNonQuery();
-                Console.WriteLine($"Lien entre le produit et le client créé avec succès.");
-            }
-        }
-
 
         static void addUser(MySqlConnection connexion, string nom,List<User> users)
         {
             // Vérifier si le nom existe déjà dans la liste
             if (users.Any(u => u.username.Equals(nom, StringComparison.OrdinalIgnoreCase)))
             {
-                Console.WriteLine("Erreur : Ce nom existe déjà dans la base de données.");
                 return;
             }
 
@@ -338,85 +396,96 @@ namespace ConsoleAppTest
             }
         }
 
-        static void sumPanier(MySqlConnection connexion)
+        static void sumPanier(MySqlConnection connexion, int customerId)
         {
             int total = 0;
-            string requette = @"SELECT SUM(price_item) AS total FROM panier; SELECT article_id, COUNT(*) AS nombre_articles FROM panier GROUP BY article_id;";
-            using var command = new MySqlCommand(requette, connexion);
+
+            // Requête SQL combinée pour :
+            // 1. Calculer la somme totale des prix des articles dans le panier
+            // 2. Compter les articles groupés par leur ID
+            string request = @"
+            SELECT SUM(p.price_item) AS total FROM panier p INNER JOIN article_customer ac ON p.slot_id = ac.slot_id WHERE ac.customer_id = @customerId;
+
+            SELECT p.article_id, COUNT(*) AS nombre_articles FROM panier p INNER JOIN article_customer ac ON p.slot_id = ac.slot_id WHERE ac.customer_id = @customerId GROUP BY p.article_id;";
+
+            // Préparation de la commande avec paramètre pour sécuriser la requête
+            using var command = new MySqlCommand(request, connexion);
+            command.Parameters.AddWithValue("@customerId", customerId);
+
+            // Exécution de la requête et lecture des résultats
             using var reader = command.ExecuteReader();
 
+            // Lecture du total (première partie de la requête)
             if (reader.Read() && !reader.IsDBNull(0))
             {
-                total = reader.GetInt32(0);
-                if (total == 0)
-                {
-                    Console.WriteLine("Votre panier est vide");
-                }
-                else
-                {
-                    Console.WriteLine($"Le total de votre panier est de : {total} euros");
-                }
+                total = reader.GetInt32(0); // Récupération du total
+                Console.WriteLine($"Le total de votre panier est de : {total} euros"); 
+            }
+            else
+            {
+                Console.WriteLine("Votre panier est vide");
             }
 
-            // Passer à la deuxième requête
-            if (reader.NextResult())
+            // Lecture des détails des articles (deuxième partie de la requête)
+            if (reader.NextResult()) // Passe au résultat suivant
             {
                 Console.WriteLine("Détail des articles dans le panier :");
-                while (reader.Read())
+                while (reader.Read()) // Parcours des lignes
                 {
-                    int articleId = reader.GetInt32("article_id");
-                    int nombreArticles = reader.GetInt32("nombre_articles");
-
+                    int articleId = reader.GetInt32("article_id"); // Récupération de l'ID de l'article
+                    int nombreArticles = reader.GetInt32("nombre_articles"); // Récupération du nombre d'articles
                     Console.WriteLine($"Article ID: {articleId}, Quantité : {nombreArticles}");
                 }
             }
         }
 
-        static void removeProduct(MySqlConnection connexion, Produit produit,User user)
+        static void removeProduct(MySqlConnection connexion,Produit produit, int addPanier, Panier panier ,User user)
         {
-            int articleId = produit.CodeProduit;
+            int slot_id = panier.slot_id;
+            int article_id = Math.Abs(addPanier);
             decimal price_item = produit.Prix;
             int customerId = user.customer_id;
+
             // Vérifier si l'article existe dans la base
-            var requetteCheckArticle = "SELECT COUNT(*) FROM article WHERE article_id = @articleId";
+            var requetteCheckArticle = "SELECT COUNT(*) FROM article WHERE article_id = @articleId"; 
             using (var checkCommand = new MySqlCommand(requetteCheckArticle, connexion))
             {
-                checkCommand.Parameters.AddWithValue("@articleId", articleId);
-                checkCommand.Parameters.AddWithValue("@price_item", price_item);
+                checkCommand.Parameters.AddWithValue("@articleId", article_id); //
                 var count = Convert.ToInt32(checkCommand.ExecuteScalar());
                 if (count > 0) // L'article existe
                 {
+                    // Supprimer l'article du panier
                     var requetteInsert = "DELETE FROM `panier` WHERE article_id = @articleId LIMIT 1";
                     using (var insertCommand = new MySqlCommand(requetteInsert, connexion))
                     {
-                        insertCommand.Parameters.AddWithValue("@articleId", articleId);
-                        insertCommand.Parameters.AddWithValue("@price_item", price_item);
+                        insertCommand.Parameters.AddWithValue("@articleId", article_id);
                         insertCommand.ExecuteNonQuery();
                         Console.WriteLine($"Produit {produit.Nom} retiré du panier avec succès.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Erreur : L'article avec l'ID {articleId} n'existe pas dans la table 'article'.");
+                    Console.WriteLine($"Erreur : L'article avec l'ID {article_id} n'existe pas dans la table 'article'.");
                 }
 
                 // Vérifiez si l'article est toujours dans le panier
-                var checkLinkQuery = "SELECT COUNT(*) FROM article_customer WHERE article_id = @articleId AND customer_id = @customerId";
+                var checkLinkQuery = "SELECT COUNT(*) FROM article_customer WHERE slot_id = @slot_id AND customer_id = @customerId";
                 using (var checkLinkCommand = new MySqlCommand(checkLinkQuery, connexion))
                 {
-                    checkLinkCommand.Parameters.AddWithValue("@articleId", articleId);
+                 
+                    checkLinkCommand.Parameters.AddWithValue("@slot_id", slot_id);
                     checkLinkCommand.Parameters.AddWithValue("@customerId", customerId);
                     int countLink = Convert.ToInt32(checkLinkCommand.ExecuteScalar());
 
        
                         // Supprimer le lien
-                        var deleteLinkQuery = "DELETE FROM article_customer WHERE article_id = @articleId AND customer_id = @customerId";
+                        var deleteLinkQuery = "DELETE FROM article_customer WHERE slot_id = @slot_id AND customer_id = @customerId LIMIT 1";
                         using (var deleteLinkCommand = new MySqlCommand(deleteLinkQuery, connexion))
                         {
-                            deleteLinkCommand.Parameters.AddWithValue("@articleId", articleId);
+                            deleteLinkCommand.Parameters.AddWithValue("@slot_id", slot_id);
                             deleteLinkCommand.Parameters.AddWithValue("@customerId", customerId);
                             deleteLinkCommand.ExecuteNonQuery();
-                            Console.WriteLine($"Lien entre article ID {articleId} et client ID {customerId} supprimé.");
+                            Console.WriteLine($"Lien entre article ID {slot_id} et client ID {customerId} supprimé.");
                         }
 
                 }
@@ -435,7 +504,7 @@ namespace ConsoleAppTest
             {
                 if (reader.Read())
                 {
-                    stockActuel = reader.GetInt32("numberOfArticle");
+                    stockActuel = reader.GetInt32("numberOfArticle"); // Récupération du stock actuel
                 }
                 else
                 {
@@ -456,7 +525,7 @@ namespace ConsoleAppTest
             using var commandUpdate = new MySqlCommand(requetteUpdateStock, connexion);
             commandUpdate.Parameters.AddWithValue("@articleId", articleId);
 
-            int rowsAffected = commandUpdate.ExecuteNonQuery();
+            int rowsAffected = commandUpdate.ExecuteNonQuery(); // 
             if (rowsAffected > 0)
             {
                 Console.WriteLine($"Le stock de l'article avec ID {articleId} a été réduit de 1.");
@@ -493,6 +562,8 @@ namespace ConsoleAppTest
                 return;
             }
 
+            // Incrémenter le stock
+
             string requetteUpdateStock = "UPDATE article SET numberOfArticle = numberOfArticle + 1 WHERE article_id = @articleId";
             using var commandUpdate = new MySqlCommand(requetteUpdateStock, connexion);
             commandUpdate.Parameters.AddWithValue("@articleId", articleId);
@@ -506,6 +577,7 @@ namespace ConsoleAppTest
                 Console.WriteLine($"Erreur : Impossible de mettre à jour le stock de l'article avec ID {articleId}.");
             }
         }
+        
     }
 } 
 

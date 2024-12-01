@@ -9,11 +9,11 @@ namespace TPcsharp2._0.Class
     internal class articleCustomers
     {
         public int customer_id { get; set; }
-        public int article_id { get; set; }
-        public articleCustomers(int customer_id, int article_id)
+        public int slot_id { get; set; }
+        public articleCustomers(int customer_id, int slot_id)
         {
             this.customer_id = customer_id;
-            this.article_id = article_id;
+            this.slot_id = slot_id;
         }
     }
 }
