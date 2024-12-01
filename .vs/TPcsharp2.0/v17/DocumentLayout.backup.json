@@ -38,8 +38,7 @@
               "RelativeToolTip": "TPcsharp2.0\\Class\\articleCustomers.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-01T12:10:50.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-01T12:10:50.832Z"
             },
             {
               "$type": "Document",
@@ -51,8 +50,7 @@
               "RelativeToolTip": "TPcsharp2.0\\Class\\User.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAqwBEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-01T11:27:43.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-01T11:27:43.157Z"
             },
             {
               "$type": "Document",
@@ -60,9 +58,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs",
               "RelativeDocumentMoniker": "TPcsharp2.0\\Program.cs",
-              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs",
-              "RelativeToolTip": "TPcsharp2.0\\Program.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAcwI0BAAARAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\merlo\\Bureau\\B2_informatique\\C#\\TPcsharp2.0\\TPcsharp2.0\\Program.cs*",
+              "RelativeToolTip": "TPcsharp2.0\\Program.cs*",
+              "ViewState": "AgIAABgAAAAAAAAAAAAwwD4AAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-20T13:47:04.851Z",
               "EditorCaption": ""
@@ -77,8 +75,7 @@
               "RelativeToolTip": "TPcsharp2.0\\Class\\Produit.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T15:25:11.75Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-25T15:25:11.75Z"
             }
           ]
         }

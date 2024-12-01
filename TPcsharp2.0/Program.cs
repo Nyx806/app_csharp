@@ -60,7 +60,7 @@ namespace ConsoleAppTest
                 string nomUser = afficheUser(connexion, users,nom);
 
                 
-                //Console.Clear();
+                Console.Clear();
 
                 Console.WriteLine("   #####    #####   ### ###   #####    ######           ######   #######  ### ###  #######  ##  ###   ######  #######\r\n  ### ###  ### ###  ### ###  ### ###   # ## #           ### ###  ### ###  ### ###  ### ###  ### ###   # ## #  ### ###\r\n  ### ###  ###      ### ###  ### ###     ##             ### ###  ###      ### ###  ###      #######     ##    ###\r\n  #######  ###      #######  #######     ##             ######   #####    ### ###  #####    #######     ##    #####\r\n  ### ###  ###      ### ###  ### ###     ##             ### ##   ###      ### ###  ###      ### ###     ##    ###\r\n  ### ###  ### ###  ### ###  ### ###     ##             ### ###  ### ###   #####   ### ###  ### ###     ##    ### ###\r\n  ### ###   #####   ### ###  ### ###     ##             ### ###  #######    ###    #######  ### ###     ##    #######\r\n\r\n");
                 Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
@@ -105,9 +105,11 @@ namespace ConsoleAppTest
                 }else if(keyProduct.Contains(-ajoutPanier))
                 {
                     var produitTrouve = produits.FirstOrDefault(p => p.CodeProduit == -ajoutPanier);
+                    var currentUser = users.FirstOrDefault(u => u.username == nom);
+
                     if (produitTrouve != null)
                     {
-                        removeProduct(connexion, produitTrouve);
+                        removeProduct(connexion, produitTrouve,currentUser);
                         incrementStock(connexion, -ajoutPanier, produitTrouve.maxQuantiteEnStock);
                     }
                 }
@@ -370,10 +372,11 @@ namespace ConsoleAppTest
             }
         }
 
-        static void removeProduct(MySqlConnection connexion, Produit produit)
+        static void removeProduct(MySqlConnection connexion, Produit produit,User user)
         {
             int articleId = produit.CodeProduit;
             decimal price_item = produit.Prix;
+            int customerId = user.customer_id;
             // Vérifier si l'article existe dans la base
             var requetteCheckArticle = "SELECT COUNT(*) FROM article WHERE article_id = @articleId";
             using (var checkCommand = new MySqlCommand(requetteCheckArticle, connexion))
@@ -395,6 +398,27 @@ namespace ConsoleAppTest
                 else
                 {
                     Console.WriteLine($"Erreur : L'article avec l'ID {articleId} n'existe pas dans la table 'article'.");
+                }
+
+                // Vérifiez si l'article est toujours dans le panier
+                var checkLinkQuery = "SELECT COUNT(*) FROM article_customer WHERE article_id = @articleId AND customer_id = @customerId";
+                using (var checkLinkCommand = new MySqlCommand(checkLinkQuery, connexion))
+                {
+                    checkLinkCommand.Parameters.AddWithValue("@articleId", articleId);
+                    checkLinkCommand.Parameters.AddWithValue("@customerId", customerId);
+                    int countLink = Convert.ToInt32(checkLinkCommand.ExecuteScalar());
+
+       
+                        // Supprimer le lien
+                        var deleteLinkQuery = "DELETE FROM article_customer WHERE article_id = @articleId AND customer_id = @customerId";
+                        using (var deleteLinkCommand = new MySqlCommand(deleteLinkQuery, connexion))
+                        {
+                            deleteLinkCommand.Parameters.AddWithValue("@articleId", articleId);
+                            deleteLinkCommand.Parameters.AddWithValue("@customerId", customerId);
+                            deleteLinkCommand.ExecuteNonQuery();
+                            Console.WriteLine($"Lien entre article ID {articleId} et client ID {customerId} supprimé.");
+                        }
+
                 }
             }
         }
